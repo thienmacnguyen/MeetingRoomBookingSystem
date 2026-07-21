@@ -1,4 +1,4 @@
-package entity;
+package com.macthien.meetingroombookingsystem.entity;
 
 import enums.MaintenanceStatus;
 import jakarta.persistence.*;

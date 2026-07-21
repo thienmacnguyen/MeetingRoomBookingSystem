@@ -1,4 +1,4 @@
-package entity;
+package com.macthien.meetingroombookingsystem.entity;
 
 import enums.BookingStatus;
 import jakarta.persistence.*;
@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
