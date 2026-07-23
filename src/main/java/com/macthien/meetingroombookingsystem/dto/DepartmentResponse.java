@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DepartmentResponse {
-    private Long id;
+    private Long departmentId;
     private String departmentCode;
     private String departmentName;
     private String departmentDescription;
