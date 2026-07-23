@@ -1,6 +1,6 @@
 package com.macthien.meetingroombookingsystem.entity;
 
-import enums.EmployeeStatus;
+import com.macthien.meetingroombookingsystem.enums.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.macthien.meetingroombookingsystem.entity;
 
-import enums.MaintenanceStatus;
+import com.macthien.meetingroombookingsystem.enums.MaintenanceStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;

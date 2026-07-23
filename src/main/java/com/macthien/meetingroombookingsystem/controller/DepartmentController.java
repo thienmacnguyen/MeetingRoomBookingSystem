@@ -29,28 +29,28 @@ public class DepartmentController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<DepartmentResponse> updateDepartment(
-            @PathVariable Long departmentId,
+            @PathVariable("id") Long departmentId,
             @Valid @RequestBody DepartmentRequest request
     ) throws ResourceNotFoundException, DuplicateCodeException {
         return ResponseEntity.ok(departmentService.updateDepartment(departmentId, request));
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteDepartment(
-            @PathVariable Long departmentId
+            @PathVariable("id") Long departmentId
         ) throws ResourceNotFoundException, DeleteConstraintException {
         departmentService.deleteDepartment(departmentId);
         return ResponseEntity.ok("Xóa phòng ban thành công");
     }
 
-    @GetMapping("search/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponse> getDepartmentById(
-            @PathVariable Long departmentId
+            @PathVariable("id") Long departmentId
     ) throws ResourceNotFoundException {
         DepartmentResponse response = departmentService.getDepartmentById(departmentId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/searchall")
+    @GetMapping("/v1/{id}")
     public ResponseEntity<Page<DepartmentResponse>> getAllDepartments(
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = "0") int page,

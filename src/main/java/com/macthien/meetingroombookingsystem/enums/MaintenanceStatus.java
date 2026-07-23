@@ -1,4 +1,4 @@
-package enums;
+package com.macthien.meetingroombookingsystem.enums;
 
 public enum MaintenanceStatus {
 
