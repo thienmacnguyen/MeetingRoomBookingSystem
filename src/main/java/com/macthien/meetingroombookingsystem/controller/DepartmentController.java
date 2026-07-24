@@ -50,7 +50,7 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/v1/{id}")
+    @GetMapping
     public ResponseEntity<Page<DepartmentResponse>> getAllDepartments(
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "page", defaultValue = "0") int page,

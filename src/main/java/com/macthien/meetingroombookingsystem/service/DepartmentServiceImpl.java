@@ -93,6 +93,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private DepartmentResponse mapToResponse(Department department) {
         DepartmentResponse response = new DepartmentResponse();
+        response.setDepartmentId(department.getDepartmentId());
         response.setDepartmentCode(department.getDepartmentCode());
         response.setDepartmentName(department.getDepartmentName());
         response.setDepartmentDescription(department.getDepartmentDescription());
