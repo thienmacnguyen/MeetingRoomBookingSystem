@@ -19,6 +19,7 @@ public interface EmployeeService {
     EmployeeResponse updateEmployee(Long employeeId, EmployeeRequest request)
             throws ResourceNotFoundException, DuplicateCodeException;
 
-    void deleteEmployee(Long employeeId)
-            throws ResourceNotFoundException;
+    void softDeleteEmployee(Long employeeId) throws ResourceNotFoundException;
+
+    void hardDeleteEmployee(Long employeeId) throws ResourceNotFoundException;
 }

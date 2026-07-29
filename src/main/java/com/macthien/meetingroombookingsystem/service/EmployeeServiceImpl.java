@@ -6,13 +6,16 @@ import com.macthien.meetingroombookingsystem.dto.EmployeeRequest;
 import com.macthien.meetingroombookingsystem.dto.EmployeeResponse;
 import com.macthien.meetingroombookingsystem.entity.Department;
 import com.macthien.meetingroombookingsystem.entity.Employee;
+import com.macthien.meetingroombookingsystem.enums.EmployeeStatus;
 import com.macthien.meetingroombookingsystem.repository.DepartmentRepository;
 import com.macthien.meetingroombookingsystem.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -96,10 +99,28 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteEmployee(Long employeeId) throws ResourceNotFoundException {
+    @Transactional(rollbackFor = ResourceNotFoundException.class)
+    public void softDeleteEmployee(Long employeeId) throws ResourceNotFoundException {
+
+        Employee employee = employeeRepository.findByEmployeeIdAndIsDeletedFalse(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên hoạt động với ID: " + employeeId));
+
+        employee.setDeleted(true);
+        employee.setEmployeeStatus(EmployeeStatus.INACTIVE);
+        employeeRepository.save(employee);
+
+        System.err.println("Đã xóa nhân viên: " + employee.getEmployeeFullName());
+    }
+
+    @Override
+    @Transactional(rollbackFor = ResourceNotFoundException.class)
+    public void hardDeleteEmployee(Long employeeId) throws ResourceNotFoundException {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên với ID: " + employeeId));
+
         employeeRepository.delete(employee);
+
+        System.err.println("Đã xóa nhân viên: " + employee.getEmployeeFullName());
     }
 
     private EmployeeResponse mapToResponse(Employee employee) {

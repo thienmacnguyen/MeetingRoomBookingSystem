@@ -45,4 +45,7 @@ public class MeetingRoom {
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Maintenance> maintenances;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted = false;
 }
