@@ -10,12 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    boolean existsByDepartmentDepartmentId(Long employeeId);
+    boolean existsByDepartmentDepartmentIdAndDeletedFalse(Long employeeId);
     boolean existsByEmployeeCode(String employeeCode);
     boolean existsByEmployeeCodeAndEmployeeIdNot(String employeeCode, Long employeeId);
     boolean existsByEmployeeEmail(String employeeEmail);
     boolean existsByEmployeeEmailAndEmployeeIdNot(String employeeEmail, Long employeeId);
-    Optional<Employee> findByEmployeeIdAndIsDeletedFalse(Long employeeId);
+    Optional<Employee> findByEmployeeIdAndDeletedFalse(Long employeeId);
     Page<Employee> findByEmployeeFullNameContainingIgnoreCaseOrEmployeeEmailContainingIgnoreCase(
             String fullName, String email, Pageable pageable);
 }

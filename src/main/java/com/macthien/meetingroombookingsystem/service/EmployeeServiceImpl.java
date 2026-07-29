@@ -102,7 +102,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(rollbackFor = ResourceNotFoundException.class)
     public void softDeleteEmployee(Long employeeId) throws ResourceNotFoundException {
 
-        Employee employee = employeeRepository.findByEmployeeIdAndIsDeletedFalse(employeeId)
+        Employee employee = employeeRepository.findByEmployeeIdAndDeletedFalse(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên hoạt động với ID: " + employeeId));
 
         employee.setDeleted(true);

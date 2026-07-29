@@ -28,4 +28,7 @@ public class Department {
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Employee> employees;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted = false;
 }

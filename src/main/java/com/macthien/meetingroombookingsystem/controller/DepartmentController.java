@@ -27,20 +27,6 @@ public class DepartmentController {
         DepartmentResponse response = departmentService.createDepartment(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<DepartmentResponse> updateDepartment(
-            @PathVariable("id") Long departmentId,
-            @Valid @RequestBody DepartmentRequest request
-    ) throws ResourceNotFoundException, DuplicateCodeException {
-        return ResponseEntity.ok(departmentService.updateDepartment(departmentId, request));
-    }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteDepartment(
-            @PathVariable("id") Long departmentId
-        ) throws ResourceNotFoundException, DeleteConstraintException {
-        departmentService.deleteDepartment(departmentId);
-        return ResponseEntity.ok("Xóa phòng ban thành công");
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponse> getDepartmentById(
@@ -64,6 +50,29 @@ public class DepartmentController {
 
         Page<DepartmentResponse> response = departmentService.getAllDepartments(search, pageable);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<DepartmentResponse> updateDepartment(
+            @PathVariable("id") Long departmentId,
+            @Valid @RequestBody DepartmentRequest request
+    ) throws ResourceNotFoundException, DuplicateCodeException {
+        return ResponseEntity.ok(departmentService.updateDepartment(departmentId, request));
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> softDeleteDepartment(
+            @PathVariable("id") Long departmentId
+        ) throws ResourceNotFoundException, DeleteConstraintException {
+        departmentService.softDeleteDepartment(departmentId);
+        return ResponseEntity.ok("Xóa phòng ban thành công");
+    }
+
+    @DeleteMapping("/purge/{id}")
+    public ResponseEntity<String> hardDeleteDepartment(
+            @PathVariable("id") Long departmentId
+    ) throws ResourceNotFoundException, DeleteConstraintException {
+        departmentService.hardDeleteDepartment(departmentId);
+        return ResponseEntity.ok("Xóa phòng ban thành công");
     }
 }
 

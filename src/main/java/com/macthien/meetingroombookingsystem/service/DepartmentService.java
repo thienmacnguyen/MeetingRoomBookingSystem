@@ -20,5 +20,8 @@ public interface DepartmentService {
 
     DepartmentResponse getDepartmentById(Long departmentId) throws ResourceNotFoundException;
 
-    void deleteDepartment(Long departmentId) throws ResourceNotFoundException, DeleteConstraintException;
+    void softDeleteDepartment(Long id)
+            throws ResourceNotFoundException, DeleteConstraintException;
+    void hardDeleteDepartment(Long id)
+            throws ResourceNotFoundException, DeleteConstraintException;
 }

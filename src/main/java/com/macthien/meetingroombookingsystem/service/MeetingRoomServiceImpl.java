@@ -3,6 +3,7 @@ package com.macthien.meetingroombookingsystem.service;
 import com.macthien.meetingroombookingsystem.Exception.DeleteConstraintException;
 import com.macthien.meetingroombookingsystem.Exception.DuplicateCodeException;
 import com.macthien.meetingroombookingsystem.Exception.ResourceNotFoundException;
+import com.macthien.meetingroombookingsystem.enums.BookingStatus;
 import com.macthien.meetingroombookingsystem.dto.RoomRequest;
 import com.macthien.meetingroombookingsystem.dto.RoomResponse;
 import com.macthien.meetingroombookingsystem.entity.MeetingRoom;
@@ -94,7 +95,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp hoạt động với ID: " + roomId));
 
         LocalDateTime now = LocalDateTime.now();
-        if (bookingRepository.existsFutureBookingByRoomId(roomId, now, com.macthien.meetingroombookingsystem.enums.BookingStatus.CANCELLED)) {
+        if (bookingRepository.existsFutureBookingByRoomId(roomId, now, BookingStatus.CANCELLED)) {
             throw new DeleteConstraintException("Không thể xóa phòng họp này vì vẫn còn các lịch đặt phòng hoạt động trong tương lai.");
         }
 
@@ -112,7 +113,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp với ID: " + roomId));
 
         LocalDateTime now = LocalDateTime.now();
-        if (bookingRepository.existsFutureBookingByRoomId(roomId, now, com.macthien.meetingroombookingsystem.enums.BookingStatus.CANCELLED)) {
+        if (bookingRepository.existsFutureBookingByRoomId(roomId, now, BookingStatus.CANCELLED)) {
             throw new DeleteConstraintException("Không thể xóa phòng họp này vì vẫn còn các lịch đặt phòng hoạt động trong tương lai.");
         }
 
