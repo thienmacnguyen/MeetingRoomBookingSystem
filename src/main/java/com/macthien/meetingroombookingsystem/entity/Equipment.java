@@ -34,4 +34,7 @@ public class Equipment {
 
     @OneToMany(mappedBy = "equipment", fetch = FetchType.LAZY)
     private List<RoomEquipment> roomEquipments;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted = false;
 }
