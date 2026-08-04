@@ -36,7 +36,4 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "employee_status", nullable = false, length = 20)
     private EmployeeStatus employeeStatus;
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean deleted = false;
 }

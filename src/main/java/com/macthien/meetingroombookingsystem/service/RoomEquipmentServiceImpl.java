@@ -12,7 +12,6 @@ import com.macthien.meetingroombookingsystem.repository.MeetingRoomRepository;
 import com.macthien.meetingroombookingsystem.repository.RoomEquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,9 +28,8 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
     private EquipmentRepository equipmentRepository;
 
     @Override
-    @Transactional(rollbackFor = {ResourceNotFoundException.class, DuplicateCodeException.class})
     public RoomEquipmentResponse assignEquipment(RoomEquipmentRequest request) throws ResourceNotFoundException, DuplicateCodeException {
-        MeetingRoom room = meetingRoomRepository.findByRoomIdAndDeletedFalse(request.getRoomId())
+        MeetingRoom room = meetingRoomRepository.findByRoomId(request.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp hoạt động với ID: " + request.getRoomId()));
 
         Equipment equipment = equipmentRepository.findByEquipmentIdAndDeletedFalse(request.getEquipmentId())
@@ -55,9 +53,8 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<RoomEquipmentResponse> getEquipmentsByRoom(Long roomId) throws ResourceNotFoundException {
-        meetingRoomRepository.findByRoomIdAndDeletedFalse(roomId)
+        meetingRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp hoạt động với ID: " + roomId));
 
         List<RoomEquipment> list = roomEquipmentRepository.findByRoomRoomId(roomId);
@@ -65,7 +62,6 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
     }
 
     @Override
-    @Transactional(rollbackFor = {ResourceNotFoundException.class, DuplicateCodeException.class})
     public RoomEquipmentResponse updateAssignedQuantity(Long roomEquipmentId, Integer quantity) throws ResourceNotFoundException, DuplicateCodeException {
         RoomEquipment roomEquipment = roomEquipmentRepository.findById(roomEquipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin gán thiết bị với ID: " + roomEquipmentId));
@@ -82,7 +78,6 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
     }
 
     @Override
-    @Transactional(rollbackFor = ResourceNotFoundException.class)
     public void unassignEquipment(Long roomEquipmentId) throws ResourceNotFoundException {
         RoomEquipment roomEquipment = roomEquipmentRepository.findById(roomEquipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin gán thiết bị với ID: " + roomEquipmentId));

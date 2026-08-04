@@ -6,13 +6,13 @@ import com.macthien.meetingroombookingsystem.Exception.ResourceNotFoundException
 import com.macthien.meetingroombookingsystem.dto.DepartmentRequest;
 import com.macthien.meetingroombookingsystem.dto.DepartmentResponse;
 import com.macthien.meetingroombookingsystem.entity.Department;
+import com.macthien.meetingroombookingsystem.enums.EmployeeStatus;
 import com.macthien.meetingroombookingsystem.repository.DepartmentRepository;
 import com.macthien.meetingroombookingsystem.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,7 +26,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     private EmployeeRepository employeeRepository;
 
     @Override
-    @Transactional(rollbackFor = DuplicateCodeException.class)
     public DepartmentResponse createDepartment(DepartmentRequest request) throws DuplicateCodeException {
         String code = request.getDepartmentCode();
         if (code == null || code.trim().isEmpty()) {
@@ -47,26 +46,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<DepartmentResponse> getAllDepartments(String search, Pageable pageable) {
         Page<Department> departments;
-        if (search == null || search.trim().isEmpty()) {
-            departments = departmentRepository.findAllByDeletedFalse(pageable);
-        } else {
-            departments = departmentRepository.searchActiveDepartments(search, pageable);
-        }
+        departments = departmentRepository.searchDepartments(search, pageable);
         return departments.map(this::mapToResponse);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public DepartmentResponse getDepartmentById(Long departmentId) throws ResourceNotFoundException {
         Department department = departmentRepository.findById(departmentId).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban với ID: " + departmentId));
             return mapToResponse(department);
     }
 
     @Override
-    @Transactional(rollbackFor = {ResourceNotFoundException.class, DuplicateCodeException.class})
     public DepartmentResponse updateDepartment(Long departmentId, DepartmentRequest request)
             throws ResourceNotFoundException, DuplicateCodeException {
 
@@ -90,7 +82,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = departmentRepository.findByDepartmentIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban hoạt động với ID: " + id));
 
-        if (employeeRepository.existsByDepartmentDepartmentIdAndDeletedFalse(id)) {
+        if (employeeRepository.existsByDepartmentDepartmentIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE)) {
             throw new DeleteConstraintException("Không thể xóa phòng ban này vì vẫn còn nhân viên hoạt động trực thuộc.");
         }
 
@@ -105,7 +97,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban với ID: " + id));
 
-        if (employeeRepository.existsByDepartmentDepartmentIdAndDeletedFalse(id)) {
+        if (employeeRepository.existsByDepartmentDepartmentIdAndEmployeeStatus(id, EmployeeStatus.ACTIVE)) {
             throw new DeleteConstraintException("Không thể xóa phòng ban này vì vẫn còn nhân viên hoạt động trực thuộc.");
         }
 

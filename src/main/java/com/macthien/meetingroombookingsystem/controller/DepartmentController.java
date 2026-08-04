@@ -44,7 +44,6 @@ public class DepartmentController {
             @RequestParam(value = "sortBy", defaultValue = "departmentId") String sortBy,
             @RequestParam(value = "direction", defaultValue = "ASC") String direction
     ) throws ResourceNotFoundException {
-        // Cấu hình sắp xếp theo thuộc tính truyền vào (mặc định tăng dần theo departmentId)
         Sort sort = direction.equalsIgnoreCase("DESC") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
 

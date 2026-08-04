@@ -34,4 +34,7 @@ public class Maintenance {
     @Enumerated(EnumType.STRING)
     @Column(name = "maintenance_status", nullable = false, length = 30)
     private MaintenanceStatus maintenanceStatus;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted = false;
 }

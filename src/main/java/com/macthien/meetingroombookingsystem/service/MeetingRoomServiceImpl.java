@@ -33,7 +33,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         if (code == null || code.trim().isEmpty()) {
             code = generateNextRoomCode();
         } else {
-            if (roomRepository.existsByRoomCodeAndDeletedFalse(code)) {
+            if (roomRepository.existsByRoomCode(code)) {
                 throw new DuplicateCodeException("Mã phòng họp '" + code + "' đã tồn tại.");
             }
         }
@@ -43,9 +43,8 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         room.setRoomName(request.getRoomName());
         room.setRoomFloor(request.getRoomFloor());
         room.setRoomCapacity(request.getRoomCapacity());
-        room.setRoomStatus(request.getRoomStatus());
+        room.setRoomStatus(RoomStatus.ACTIVE);
         room.setRoomDescription(request.getRoomDescription());
-        room.setDeleted(false);
 
         MeetingRoom saved = roomRepository.save(room);
         return mapToResponse(saved);
@@ -54,27 +53,23 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     @Override
     public Page<RoomResponse> getAllRooms(String search, Pageable pageable) {
         Page<MeetingRoom> rooms;
-        if (search == null || search.trim().isEmpty()) {
-            rooms = roomRepository.findAllByDeletedFalse(pageable);
-        } else {
-            rooms = roomRepository.searchActiveRooms(search, pageable);
-        }
+        rooms = roomRepository.searchRooms(search, RoomStatus.OUT_OF_SERVICE, pageable);
         return rooms.map(this::mapToResponse);
     }
 
     @Override
     public RoomResponse getRoomById(Long roomId) throws ResourceNotFoundException {
-        MeetingRoom room = roomRepository.findByRoomIdAndDeletedFalse(roomId)
+        MeetingRoom room = roomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp hoạt động với ID: " + roomId));
         return mapToResponse(room);
     }
 
     @Override
     public RoomResponse updateRoom(Long roomId, RoomRequest request) throws ResourceNotFoundException, DuplicateCodeException {
-        MeetingRoom room = roomRepository.findByRoomIdAndDeletedFalse(roomId)
+        MeetingRoom room = roomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp hoạt động với ID: " + roomId));
 
-        if (roomRepository.existsByRoomCodeAndRoomIdNotAndDeletedFalse(request.getRoomCode(), roomId)) {
+        if (roomRepository.existsByRoomCodeAndRoomIdNot(request.getRoomCode(), roomId)) {
             throw new DuplicateCodeException("Mã phòng họp '" + request.getRoomCode() + "' đã được sử dụng bởi phòng khác.");
         }
 
@@ -91,7 +86,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 
     @Override
     public void softDeleteRoom(Long roomId) throws ResourceNotFoundException, DeleteConstraintException {
-        MeetingRoom room = roomRepository.findByRoomIdAndDeletedFalse(roomId)
+        MeetingRoom room = roomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng họp hoạt động với ID: " + roomId));
 
         LocalDateTime now = LocalDateTime.now();
@@ -99,7 +94,6 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             throw new DeleteConstraintException("Không thể xóa phòng họp này vì vẫn còn các lịch đặt phòng hoạt động trong tương lai.");
         }
 
-        room.setDeleted(true);
         room.setRoomStatus(RoomStatus.OUT_OF_SERVICE);
         roomRepository.save(room);
 
@@ -126,7 +120,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         int defaultStartNumber = 201;
 
         Optional<MeetingRoom> lastRoomOpt = roomRepository
-                .findFirstByRoomCodeStartingWithAndDeletedFalseOrderByRoomCodeDesc(prefix);
+                .findFirstByRoomCodeStartingWithOrderByRoomCodeDesc(prefix);
 
         if (lastRoomOpt.isEmpty()) {
             return prefix + defaultStartNumber;

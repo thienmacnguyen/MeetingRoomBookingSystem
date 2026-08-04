@@ -16,7 +16,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     boolean existsByDepartmentCodeAndDeletedFalse(String departmentCode);
     boolean existsByDepartmentCodeAndDepartmentIdNotAndDeletedFalse(String departmentCode, Long departmentId);
     Optional<Department> findFirstByDepartmentCodeStartingWithAndDeletedFalseOrderByDepartmentCodeDesc(String prefix);
-    Page<Department> findAllByDeletedFalse(Pageable pageable);
-    @Query("SELECT d FROM Department d WHERE d.deleted = false AND LOWER(d.departmentName) LIKE LOWER(CONCAT('%', :search, '%'))")
-    Page<Department> searchActiveDepartments(@Param("search") String search, Pageable pageable);
+    @Query("SELECT d FROM Department d WHERE d.deleted = false AND " +
+            "(:search IS NULL OR :search = '') OR " +
+            "LOWER(d.departmentName) LIKE " +
+            "LOWER(CONCAT('%', :search, '%'))")
+    Page<Department> searchDepartments(@Param("search") String search, Pageable pageable);
 }

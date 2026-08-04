@@ -10,15 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 public class EquipmentServiceImpl implements EquipmentService {
     @Autowired
     private EquipmentRepository equipmentRepository;
 
     @Override
-    @Transactional(rollbackFor = DuplicateCodeException.class)
     public EquipmentResponse createEquipment(EquipmentRequest request) throws DuplicateCodeException {
         if (equipmentRepository.existsByEquipmentCodeAndDeletedFalse(request.getEquipmentCode())) {
             throw new DuplicateCodeException("Mã thiết bị '" + request.getEquipmentCode() + "' đã tồn tại.");
@@ -37,19 +34,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<EquipmentResponse> getAllEquipments(String search, Pageable pageable) {
         Page<Equipment> equipments;
-        if (search == null || search.trim().isEmpty()) {
-            equipments = equipmentRepository.findAllByDeletedFalse(pageable);
-        } else {
-            equipments = equipmentRepository.searchActiveEquipments(search, pageable);
-        }
+        equipments = equipmentRepository.searchEquipments(search, pageable);
         return equipments.map(this::mapToResponse);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public EquipmentResponse getEquipmentById(Long equipmentId) throws ResourceNotFoundException {
         Equipment equipment = equipmentRepository.findByEquipmentIdAndDeletedFalse(equipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thiết bị hoạt động với ID: " + equipmentId));
@@ -57,7 +48,6 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    @Transactional(rollbackFor = {ResourceNotFoundException.class, DuplicateCodeException.class})
     public EquipmentResponse updateEquipment(Long equipmentId, EquipmentRequest request) throws ResourceNotFoundException, DuplicateCodeException {
         Equipment equipment = equipmentRepository.findByEquipmentIdAndDeletedFalse(equipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thiết bị hoạt động với ID: " + equipmentId));
@@ -81,8 +71,6 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    @Transactional(rollbackFor = ResourceNotFoundException.class)
-
     public void softDeleteEquipment(Long equipmentId) throws ResourceNotFoundException {
         Equipment equipment = equipmentRepository.findByEquipmentIdAndDeletedFalse(equipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thiết bị hoạt động với ID: " + equipmentId));
@@ -93,7 +81,6 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    @Transactional(rollbackFor = ResourceNotFoundException.class)
     public void hardDeleteEquipment(Long equipmentId) throws ResourceNotFoundException {
         Equipment equipment = equipmentRepository.findById(equipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thiết bị với ID: " + equipmentId));
