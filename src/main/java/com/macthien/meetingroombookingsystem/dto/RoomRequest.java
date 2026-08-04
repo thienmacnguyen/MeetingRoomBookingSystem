@@ -24,7 +24,7 @@ public class RoomRequest {
     @Min(value = 1, message = "Sức chứa tối thiểu phải là 1 người")
     private Integer roomCapacity;
 
-    @NotNull(message = "Trạng thái phòng không được để trống")
+
     private RoomStatus roomStatus;
 
     private String roomDescription;

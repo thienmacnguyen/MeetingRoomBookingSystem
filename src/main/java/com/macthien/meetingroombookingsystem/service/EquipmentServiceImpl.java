@@ -77,7 +77,6 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         equipment.setDeleted(true);
         equipmentRepository.save(equipment);
-        System.err.println("Đã xóa thiết bị" +  equipment.getEquipmentName());
     }
 
     @Override
@@ -86,7 +85,6 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thiết bị với ID: " + equipmentId));
 
         equipmentRepository.delete(equipment);
-            System.err.println("Đã xóa thành công thiết bị:" + equipment.getEquipmentName());
 
     }
 

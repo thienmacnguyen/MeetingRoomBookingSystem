@@ -96,8 +96,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setEmployeeStatus(EmployeeStatus.INACTIVE);
         employeeRepository.save(employee);
-
-        System.err.println("Đã xóa nhân viên: " + employee.getEmployeeFullName());
     }
 
     @Override
@@ -107,7 +105,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeRepository.delete(employee);
 
-        System.err.println("Đã xóa nhân viên: " + employee.getEmployeeFullName());
     }
 
     private EmployeeResponse mapToResponse(Employee employee) {

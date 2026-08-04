@@ -69,7 +69,6 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new DuplicateCodeException("Mã phòng ban '" + request.getDepartmentCode() + "' đã được sử dụng bởi phòng ban khác.");
         }
 
-        department.setDepartmentCode(request.getDepartmentCode());
         department.setDepartmentName(request.getDepartmentName());
         department.setDepartmentDescription(request.getDepartmentDescription());
 
@@ -88,8 +87,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         department.setDeleted(true);
         departmentRepository.save(department);
-
-        System.err.println("Đã xóa phòng ban" + department.getDepartmentName());
     }
 
     @Override
@@ -102,30 +99,20 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         departmentRepository.delete(department);
-
-        System.err.println("Đã xóa phòng ban" + department.getDepartmentName());
     }
 
     private String generateNextDepartmentCode() {
-        String prefix = "PB";
-        int defaultStartNumber = 1;
-
         Optional<Department> lastDeptOpt = departmentRepository
-                .findFirstByDepartmentCodeStartingWithAndDeletedFalseOrderByDepartmentCodeDesc(prefix);
+                .findFirstByDepartmentCodeStartingWithAndDeletedFalseOrderByDepartmentCodeDesc("PB");
 
         if (lastDeptOpt.isEmpty()) {
-            return prefix + String.format("%03d", defaultStartNumber);
+            return "PB001";
         }
 
         String lastCode = lastDeptOpt.get().getDepartmentCode();
-        try {
-            String numericPart = lastCode.substring(prefix.length());
-            int lastNumber = Integer.parseInt(numericPart);
-            int nextNumber = lastNumber + 1;
-            return prefix + String.format("%03d", nextNumber);
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            return prefix + String.format("%03d", defaultStartNumber);
-        }
+        int number = Integer.parseInt(lastCode.substring(2));
+
+        return String.format("PB%03d", number + 1);
     }
 
     private DepartmentResponse mapToResponse(Department department) {

@@ -87,8 +87,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maintenance.setDeleted(true);
         maintenance.setMaintenanceStatus(MaintenanceStatus.CANCELLED);
         maintenanceRepository.save(maintenance);
-
-        System.err.println("Đã xóa thành công bảo trì: ID " + maintenance.getMaintenanceId());
     }
 
     @Override
@@ -97,7 +95,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch bảo trì với ID: " + maintenanceId));
 
         maintenanceRepository.delete(maintenance);
-        System.err.println("Đã xóa thành công bảo trì: ID " + maintenance.getMaintenanceId());
     }
 
     private MaintenanceResponse mapToResponse(Maintenance m) {

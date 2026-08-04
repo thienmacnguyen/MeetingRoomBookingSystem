@@ -73,7 +73,6 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             throw new DuplicateCodeException("Mã phòng họp '" + request.getRoomCode() + "' đã được sử dụng bởi phòng khác.");
         }
 
-        room.setRoomCode(request.getRoomCode());
         room.setRoomName(request.getRoomName());
         room.setRoomFloor(request.getRoomFloor());
         room.setRoomCapacity(request.getRoomCapacity());
@@ -96,10 +95,6 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 
         room.setRoomStatus(RoomStatus.OUT_OF_SERVICE);
         roomRepository.save(room);
-
-        System.err.println("Đã xóa phòng họp: " + room.getRoomName());
-
-
     }
     @Override
     public void hardDeleteRoom(Long roomId) throws ResourceNotFoundException, DeleteConstraintException {
@@ -112,7 +107,6 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         }
 
         roomRepository.delete(room);
-        System.err.println("Đã xóa phòng họp: " + room.getRoomName());
     }
 
     private String generateNextRoomCode() {

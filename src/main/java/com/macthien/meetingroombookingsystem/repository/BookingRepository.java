@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -54,4 +55,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "LOWER(b.employee.employeeFullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(b.bookingPurpose) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<Booking> searchBookings(@Param("search") String search, Pageable pageable);
+    Optional<Booking> findFirstByBookingCodeStartingWithOrderByBookingCodeDesc(String prefix);
 }
