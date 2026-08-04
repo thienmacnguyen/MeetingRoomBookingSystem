@@ -14,10 +14,10 @@ import java.util.Optional;
 @Repository
 public interface MeetingRoomRepository extends JpaRepository<MeetingRoom, Long> {
     Optional<MeetingRoom> findByRoomId(Long roomId);
+    Optional<MeetingRoom> findByRoomIdAndRoomStatusNot(Long roomId, RoomStatus status);
     boolean existsByRoomCode(String roomCode);
     boolean existsByRoomCodeAndRoomIdNot(String roomCode, Long roomId);
     Optional<MeetingRoom> findFirstByRoomCodeStartingWithOrderByRoomCodeDesc(String prefix);
-    @Query("SELECT r FROM MeetingRoom r WHERE r.roomStatus <> :status AND LOWER(r.roomName) LIKE LOWER(CONCAT('%', :search, '%'))")
+    @Query("SELECT r FROM MeetingRoom r WHERE r.roomStatus <> :status AND :search IS NULL OR :search = '' OR LOWER(r.roomName) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<MeetingRoom> searchRooms(@Param("search") String search, @Param("status") RoomStatus status, Pageable pageable);
-
 }

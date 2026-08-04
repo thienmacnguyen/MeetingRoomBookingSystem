@@ -39,8 +39,10 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
             throw new DuplicateCodeException("Thiết bị '" + equipment.getEquipmentName() + "' đã được gán cho phòng họp này trước đó.");
         }
 
-        if (request.getAssignedQuantity() > equipment.getEquipmentTotalQuantity()) {
-            throw new DuplicateCodeException("Số lượng gán " + request.getAssignedQuantity() + " vượt quá tổng số lượng hiện có trong kho " + equipment.getEquipmentTotalQuantity() + ".");
+        Integer totalAssignedAfterAssignment = roomEquipmentRepository.getTotalAssignedQuantity(equipment.getEquipmentId()) + request.getAssignedQuantity();
+
+        if (totalAssignedAfterAssignment > equipment.getEquipmentTotalQuantity()) {
+            throw new DuplicateCodeException("Số lượng gán " + totalAssignedAfterAssignment + " vượt quá tổng số lượng hiện có trong kho " + equipment.getEquipmentTotalQuantity() + ".");
         }
 
         RoomEquipment roomEquipment = new RoomEquipment();
@@ -66,10 +68,12 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
         RoomEquipment roomEquipment = roomEquipmentRepository.findById(roomEquipmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin gán thiết bị với ID: " + roomEquipmentId));
 
-        // Kiểm tra số lượng mới so với lượng trong kho
+        // Kiểm tra số gán so với lượng trong kho
         Equipment equipment = roomEquipment.getEquipment();
-        if (quantity > equipment.getEquipmentTotalQuantity()) {
-            throw new DuplicateCodeException("Số lượng cập nhật vượt quá tổng số lượng hiện có trong kho (" + equipment.getEquipmentTotalQuantity() + ").");
+        Integer totalAssigned = roomEquipmentRepository.getTotalAssignedQuantity(equipment.getEquipmentId());
+        Integer totalAssignedAfterAssignment = totalAssigned - roomEquipment.getAssignedQuantity() + quantity;
+        if (totalAssignedAfterAssignment > equipment.getEquipmentTotalQuantity()) {
+            throw new DuplicateCodeException("Số lượng gán " + totalAssignedAfterAssignment + " vượt quá tổng số lượng hiện có trong kho " + equipment.getEquipmentTotalQuantity() + ".");
         }
 
         roomEquipment.setAssignedQuantity(quantity);
@@ -84,7 +88,6 @@ public class RoomEquipmentServiceImpl implements RoomEquipmentService {
 
         // Đối với bảng trung gian liên kết, chúng ta xóa cứng dòng liên kết này đi (hủy gán)
         roomEquipmentRepository.delete(roomEquipment);
-        System.err.println("Gỡ thiết bị khỏi phòng họp thành công");
     }
 
     private RoomEquipmentResponse mapToResponse(RoomEquipment roomEquipment) {

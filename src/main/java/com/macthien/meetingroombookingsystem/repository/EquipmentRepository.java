@@ -16,6 +16,7 @@ public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
     boolean existsByEquipmentCodeAndDeletedFalse(String equipmentCode);
     boolean existsByEquipmentCodeAndEquipmentIdNotAndDeletedFalse(String equipmentCode, Long equipmentId);
     @Query("SELECT e FROM Equipment e WHERE e.deleted = false AND " +
+            "(:search IS NULL OR :search = '') OR " +
             "(LOWER(e.equipmentName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(e.equipmentType) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<Equipment> searchEquipments(@Param("search") String search, Pageable pageable);

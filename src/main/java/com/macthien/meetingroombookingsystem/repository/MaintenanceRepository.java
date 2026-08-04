@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> {
     Optional<Maintenance> findByMaintenanceIdAndDeletedFalse(Long maintenanceId);
     @Query("SELECT m FROM Maintenance m WHERE m.deleted = false AND " +
+            "(:search IS NULL OR :search = '') OR " +
             "LOWER(m.room.roomName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(m.maintenanceReason) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Maintenance> searchMaintenances(@Param("search") String search, Pageable pageable);
