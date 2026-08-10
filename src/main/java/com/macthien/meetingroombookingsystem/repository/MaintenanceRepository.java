@@ -2,6 +2,7 @@ package com.macthien.meetingroombookingsystem.repository;
 
 import com.macthien.meetingroombookingsystem.entity.Maintenance;
 import com.macthien.meetingroombookingsystem.enums.BookingStatus;
+import com.macthien.meetingroombookingsystem.enums.MaintenanceStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,6 +32,6 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> 
             @Param("roomId") Long roomId,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime,
-            @Param("cancelledStatus") BookingStatus cancelledStatus
+            @Param("cancelledStatus") MaintenanceStatus cancelledStatus
     );
 }

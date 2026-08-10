@@ -66,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
             throw new DuplicateCodeException("Phòng họp hiện đang bận (Trạng thái: " + room.getRoomStatus() + ").");
         }
 
-        if (maintenanceRepository.existsOverlapMaintenance(request.getRoomId(), request.getBookingStartTime(), request.getBookingEndTime(), request.getBookingStatus())) {
+        if (maintenanceRepository.existsOverlapMaintenance(request.getRoomId(), request.getBookingStartTime(), request.getBookingEndTime(), MaintenanceStatus.CANCELLED)) {
             throw new DuplicateCodeException("Phòng họp đang có lịch bảo trì trùng với thời gian họp yêu cầu.");
         }
 
@@ -138,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
             throw new DuplicateCodeException("Phòng họp hiện tại không hoạt động.");
         }
 
-        if (maintenanceRepository.existsOverlapMaintenance(request.getRoomId(), request.getBookingStartTime(), request.getBookingEndTime(), request.getBookingStatus())) {
+        if (maintenanceRepository.existsOverlapMaintenance(request.getRoomId(), request.getBookingStartTime(), request.getBookingEndTime(), MaintenanceStatus.CANCELLED)) {
             throw new DuplicateCodeException("Phòng họp đang bận do lịch bảo trì trùng với thời gian họp.");
         }
 
