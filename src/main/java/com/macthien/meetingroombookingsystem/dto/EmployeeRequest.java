@@ -2,9 +2,13 @@ package com.macthien.meetingroombookingsystem.dto;
 
 import com.macthien.meetingroombookingsystem.enums.EmployeeStatus;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeRequest {
     @NotBlank(message = "Mã nhân viên không được để trống")
     @Size(max = 50, message = "Mã nhân viên không được vượt quá 50 ký tự")

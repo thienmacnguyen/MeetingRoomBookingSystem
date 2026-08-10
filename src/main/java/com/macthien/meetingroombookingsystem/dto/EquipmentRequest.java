@@ -4,9 +4,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EquipmentRequest {
     @NotBlank(message = "Mã thiết bị không được để trống")
     @Size(max = 50, message = "Mã thiết bị không được vượt quá 50 ký tự")

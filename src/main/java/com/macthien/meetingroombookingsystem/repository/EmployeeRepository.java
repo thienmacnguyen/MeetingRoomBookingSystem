@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByDepartmentDepartmentIdAndEmployeeStatus(Long departmentId, EmployeeStatus status);
@@ -26,4 +28,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             Pageable pageable
     );
 
+    Optional<Employee> findByEmployeeCodeAndEmployeeStatus(
+            String employeeCode,
+            EmployeeStatus status);
 }

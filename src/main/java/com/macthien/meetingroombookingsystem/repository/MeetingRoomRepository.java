@@ -15,6 +15,10 @@ import java.util.Optional;
 public interface MeetingRoomRepository extends JpaRepository<MeetingRoom, Long> {
     Optional<MeetingRoom> findByRoomId(Long roomId);
     Optional<MeetingRoom> findByRoomIdAndRoomStatusNot(Long roomId, RoomStatus status);
+    Optional<MeetingRoom> findByRoomCodeAndRoomStatusNot(
+            String roomCode,
+            RoomStatus roomStatus
+    );
     boolean existsByRoomCode(String roomCode);
     boolean existsByRoomCodeAndRoomIdNot(String roomCode, Long roomId);
     Optional<MeetingRoom> findFirstByRoomCodeStartingWithOrderByRoomCodeDesc(String prefix);
