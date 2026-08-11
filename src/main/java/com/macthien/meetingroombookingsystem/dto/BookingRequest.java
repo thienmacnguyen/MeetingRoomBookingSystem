@@ -22,6 +22,7 @@ public class BookingRequest {
     private Long roomId;
 
     @NotNull(message = "Thời gian bắt đầu họp không được để trống")
+    @FutureOrPresent(message = "Không thể đặt phòng trong quá khứ")
     private LocalDateTime bookingStartTime;
 
     @NotNull(message = "Thời gian kết thúc họp không được để trống")
